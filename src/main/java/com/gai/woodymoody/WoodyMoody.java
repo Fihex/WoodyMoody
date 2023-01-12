@@ -1,6 +1,12 @@
 package com.gai.woodymoody;
 
+import com.gai.woodymoody.block.WMBlocks;
+import com.gai.woodymoody.container.WMMenus;
+import com.gai.woodymoody.entity.WMBlockEntities;
+import com.gai.woodymoody.item.WMItems;
+import com.gai.woodymoody.screen.WMBookShelfScreen;
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,8 +27,13 @@ public class WoodyMoody
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        modEventBus.addListener(this::commonSetup);
+        WMItems.register(modEventBus);
+        WMBlocks.register(modEventBus);
 
+        WMBlockEntities.register(modEventBus);
+        WMMenus.register(modEventBus);
+
+        modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -37,6 +48,7 @@ public class WoodyMoody
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
+            MenuScreens.register(WMMenus.WM_BOOKSHELF.get(), WMBookShelfScreen::new);
         }
     }
 }
