@@ -19,16 +19,18 @@ import org.apache.logging.log4j.Logger;
 public class WMBookShelfContainer extends AbstractContainerMenu {
 
     public static final Logger LOGGER = LogManager.getLogger(WMBookShelfContainer.class.getName());
-
+    private static final int dataSlotsNumber = 1;
     private final ContainerLevelAccess containerLevelAccess;
+    public final ContainerData data;
 
     public WMBookShelfContainer(int id, Inventory playerInventory) {
-        this(id, playerInventory, new ItemStackHandler(WMBookShelf.selfSize), BlockPos.ZERO);
+        this(id, playerInventory, new ItemStackHandler(WMBookShelf.selfSize), BlockPos.ZERO, new SimpleContainerData(dataSlotsNumber));
     }
 
-    public WMBookShelfContainer(int id, Inventory playerInventory, IItemHandler slots, BlockPos blockPos) {
+    public WMBookShelfContainer(int id, Inventory playerInventory, IItemHandler slots, BlockPos blockPos, ContainerData data) {
         super(WMMenus.WM_BOOKSHELF.get(), id);
         this.containerLevelAccess = ContainerLevelAccess.create(playerInventory.player.level, blockPos);
+        this.data = data;
 
         final int slotSizePlus2 = 18, startX = 48, startY = 86, hotBarY = 142, invY = 58;
 
@@ -50,24 +52,8 @@ public class WMBookShelfContainer extends AbstractContainerMenu {
             addSlot(new Slot(playerInventory, col, startX + col * slotSizePlus2, hotBarY + 40));
         }
 
-    }
+        addDataSlots(data);
 
-    @Override
-    public void slotsChanged(Container container) {
-        super.slotsChanged(container);
-        LOGGER.debug("errraaa11111");
-    }
-
-    @Override
-    public void addSlotListener(ContainerListener p_38894_) {
-        super.addSlotListener(p_38894_);
-        //LOGGER.debug("errraaa222222");
-    }
-
-    @Override
-    public void resumeRemoteUpdates() {
-        super.resumeRemoteUpdates();
-        LOGGER.debug("errraaa333333");
     }
 
     @Override
@@ -106,6 +92,6 @@ public class WMBookShelfContainer extends AbstractContainerMenu {
     }
 
     public static MenuConstructor getServerContainer(WMBookshelfBlockEntity bookshelf, BlockPos blockPos) {
-        return (id, playerInventory, player) -> new WMBookShelfContainer(id, playerInventory, bookshelf.inventory, blockPos);
+        return (id, playerInventory, player) -> new WMBookShelfContainer(id, playerInventory, bookshelf.inventory, blockPos, new WMBookShelfContainerData(bookshelf, dataSlotsNumber));
     }
 }

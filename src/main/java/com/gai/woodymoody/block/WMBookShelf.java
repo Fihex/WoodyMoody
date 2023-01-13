@@ -4,6 +4,8 @@ import com.gai.woodymoody.container.WMBookShelfContainer;
 import com.gai.woodymoody.container.WMMenus;
 import com.gai.woodymoody.entity.WMBlockEntities;
 import com.gai.woodymoody.entity.WMBookshelfBlockEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -11,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -18,10 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -56,7 +56,7 @@ public class WMBookShelf extends HorizontalDirectionalBlock implements EntityBlo
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-                                                                  BlockEntityType<T> beType) {
+                                                                   BlockEntityType<T> beType) {
         return level.isClientSide ? null
                 : (level0, pos, state0, blockEntity) -> ((WMBookshelfBlockEntity) blockEntity).tick();
     }
@@ -97,6 +97,11 @@ public class WMBookShelf extends HorizontalDirectionalBlock implements EntityBlo
     }
 
     @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
+    }
+
+    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new WMBookshelfBlockEntity(pos, state);
     }
@@ -108,7 +113,7 @@ public class WMBookShelf extends HorizontalDirectionalBlock implements EntityBlo
             final MenuProvider container = new SimpleMenuProvider(WMBookShelfContainer.getServerContainer(chest, pos),
                     WMBookshelfBlockEntity.TITLE);
             NetworkHooks.openScreen((ServerPlayer) player, container, pos);
-            //level.playSound(player, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 3f, 3f);
+            //level.playSound(player, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 1f, 1f);
 
         }
 
